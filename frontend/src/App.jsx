@@ -1,564 +1,865 @@
-import { useState } from "react";
+
+import { useEffect, useRef, useState } from "react";
+
+// Keep your portrait inside src/assets/.
+import PHOTO from "./assets/ProfessionalPhoto.png";
+
+// Replace these with your real details.
+const EMAIL = "chandrakantkale517.com";
+const GITHUB = "https://github.com/chandrakant-kale";
+const LINKEDIN = "https://www.linkedin.com/in/chandraknt kale/";
+
+const skills = [
+  ["HTML5", "FRONTEND"],
+  ["CSS3", "FRONTEND"],
+  ["JavaScript", "LANGUAGE"],
+  ["React", "FRONTEND"],
+  ["Tailwind CSS", "STYLING"],
+  ["Node.js", "BACKEND"],
+  ["Express.js", "BACKEND"],
+  ["REST APIs", "BACKEND"],
+  ["MongoDB", "DATABASE"],
+  ["PostgreSQL", "DATABASE"],
+  ["Java", "LANGUAGE"],
+  ["Git & GitHub", "TOOLS"],
+];
 
 const projects = [
   {
     number: "01",
-    title: "Clean India",
-    type: "Civic Technology",
+    name: "Clean India",
+    category: "CIVIC TECHNOLOGY",
+    year: "2025–26",
     description:
-      "A waste-management platform connecting citizens with cleaning staff through QR-based collection, rewards and digital wallet features.",
-    stack: ["React", "Tailwind", "Express", "MongoDB"],
+      `An independent waste-management project designed to connect citizens with waste collection services,
+       verification and reward-based participation.`,
+    stack: ["React", "Tailwind CSS", "Express", "MongoDB"],
+    github: "",
   },
   {
     number: "02",
-    title: "Expense Tracker",
-    type: "Web Application",
+    name: "PorChatal",
+    category: "PRIVATE MESSAGING",
+    year: "2026",
     description:
-      "A focused expense-management interface with persistent local data, filtering and a clean dashboard experience.",
-    stack: ["React", "JavaScript", "LocalStorage"],
-  },
-  {
-    number: "03",
-    title: "Notes Workspace",
-    type: "Productivity",
-    description:
-      "A responsive notes experience with search, pinned notes, delete actions and persistent browser storage.",
-    stack: ["React", "Hooks", "CSS"],
+      `An ephemeral messaging application built around account authentication and temporary connection codes, 
+      with end-to-end encryption as an ongoing development focus.`,
+    stack: ["React", "Node.js", "Express", "PostgreSQL"],
+    github: "",
   },
 ];
 
-const skills = [
-  {
-    icon: "</>",
-    title: "Frontend",
-    description: "HTML · CSS · JavaScript · React",
-  },
-  {
-    icon: "◈",
-    title: "UI Engineering",
-    description: "Tailwind CSS · Responsive UI · UX",
-  },
-  {
-    icon: "{}",
-    title: "Backend",
-    description: "Node.js · Express · MongoDB · PostgreSQL",
-  },
-  {
-    icon: ">_",
-    title: "Workflow",
-    description: "Git · GitHub · Vite · VS Code",
-  },
+const navigation = [
+  ["home", "Home"],
+  ["about", "About"],
+  ["skills", "Skills"],
+  ["work", "Projects"],
+  ["contact", "Contact"],
 ];
 
-function App() {
+const technologies = [
+  "REACT",
+  "JAVASCRIPT",
+  "NODE.JS",
+  "POSTGRESQL",
+  "MONGODB",
+  "TAILWIND CSS",
+];
+
+function Arrow({ diagonal = false }) {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.7"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="h-4 w-4 shrink-0"
+    >
+      {diagonal ? (
+        <path d="M7 17 17 7M7 7h10v10" />
+      ) : (
+        <path d="M5 12h14m-6-6 6 6-6 6" />
+      )}
+    </svg>
+  );
+}
+
+function SectionLabel({ number, children, light = false }) {
+  return (
+    <div
+      className={`flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.16em]
+         ${light ? "text-neutral-600" : "text-neutral-400"
+        }`}
+    >
+      <span className={light ? "text-[#2c3480]" : "text-[#858df1]"}>
+        {number}
+      </span>
+      <span className="h-px w-8 bg-current opacity-30" />
+      <span>{children}</span>
+    </div>
+  );
+}
+
+export default function App() {
+  const sectionRefs = useRef({});
+  const marqueeRef = useRef(null);
+
+  const [active, setActive] = useState("home");
   const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [copied, setCopied] = useState(false);
 
-  const closeMenu = () => setMenuOpen(false);
+  const scrollTo = (id) => {
+    setMenuOpen(false);
+
+    sectionRefs.current[id]?.scrollIntoView({
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        ? "auto"
+        : "smooth",
+      block: "start",
+    });
+  };
+
+  // All animations are created directly by JavaScript.
+  // No custom CSS keyframes or Tailwind animation definitions are needed.
+  useEffect(() => {
+    const reducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+
+    const animations = [];
+    const observers = [];
+
+    // 1. Continuous technology marquee.
+    const track = marqueeRef.current;
+
+    if (track && !reducedMotion) {
+      const animation = track.animate(
+        [
+          { transform: "translateX(0)" },
+          { transform: "translateX(-50%)" },
+        ],
+        {
+          duration: 28000,
+          iterations: Infinity,
+          easing: "linear",
+        }
+      );
+
+      animations.push(animation);
+    }
+
+    // 2. Staggered hero heading entrance.
+    const heroLines = document.querySelectorAll("[data-hero-line]");
+
+    document.querySelectorAll("[data-hero-line]").forEach((element, index) => {
+      if (reducedMotion) {
+        element.style.opacity = "1";
+        element.style.transform = "none";
+        return;
+      }
+
+      const animation = element.animate(
+        [
+          { opacity: 0, transform: "translateY(24px)" },
+          { opacity: 1, transform: "translateY(0)" },
+        ],
+        {
+          duration: 700,
+          delay: index * 120,
+          easing: "cubic-bezier(.2,.7,.2,1)",
+          fill: "both",
+        }
+      );
+
+      animations.push(animation);
+    });
+
+    // 3. Scroll-triggered section reveals.
+    const revealElements = document.querySelectorAll("[data-reveal]");
+
+    if (reducedMotion) {
+      revealElements.forEach((element) => {
+        element.style.opacity = "1";
+        element.style.transform = "none";
+      });
+    } else {
+      revealElements.forEach((element) => {
+        element.style.opacity = "0";
+        element.style.transform = "translateY(24px)";
+      });
+
+      const revealObserver = new IntersectionObserver(
+        (entries, observer) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+
+            const element = entry.target;
+
+            const animation = element.animate(
+              [
+                { opacity: 0, transform: "translateY(24px)" },
+                { opacity: 1, transform: "translateY(0)" },
+              ],
+              {
+                duration: 700,
+                easing: "cubic-bezier(.2,.7,.2,1)",
+                fill: "forwards",
+              }
+            );
+
+            animations.push(animation);
+            observer.unobserve(element);
+          });
+        },
+        {
+          threshold: 0.08,
+          rootMargin: "0px 0px -25px 0px",
+        }
+      );
+
+      revealElements.forEach((element) => revealObserver.observe(element));
+      observers.push(revealObserver);
+    }
+
+    // 4. Active navigation section.
+    const sectionObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) setActive(entry.target.id);
+        });
+      },
+      { rootMargin: "-30% 0px -60% 0px" }
+    );
+
+    Object.values(sectionRefs.current).forEach((section) => {
+      if (section) sectionObserver.observe(section);
+    });
+
+    observers.push(sectionObserver);
+
+    // 5. Header appearance when scrolling.
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 25);
+    };
+
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => {
+      observers.forEach((observer) => observer.disconnect());
+      animations.forEach((animation) => animation.cancel());
+      window.removeEventListener("scroll", handleScroll);
+
+      revealElements.forEach((element) => {
+        element.style.removeProperty("opacity");
+        element.style.removeProperty("transform");
+      });
+    };
+  }, []);
+
+  const copyEmail = async () => {
+    if (EMAIL.includes("YOUR_EMAIL")) {
+      window.alert("Replace YOUR_EMAIL@example.com with your real email.");
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(EMAIL);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1800);
+    } catch {
+      window.location.href = `mailto:${EMAIL}`;
+    }
+  };
+
+  const openExternal = (url) => {
+    if (!url || url.includes("YOUR_USERNAME")) {
+      window.alert("Add your real profile or repository URL in App.jsx.");
+      return;
+    }
+
+    window.open(url, "_blank", "noopener,noreferrer");
+  };
 
   return (
-    <div className="min-h-screen overflow-x-hidden bg-[#080a0d] text-white selection:bg-orange-500 selection:text-white">
-      {/* Subtle background */}
-      <div className="pointer-events-none fixed inset-0 -z-10">
-        <div className="absolute left-1/2 top-[-300px] h-[650px] w-[650px] -translate-x-1/2 rounded-full bg-orange-500/10 blur-[140px]" />
-
-        <div className="absolute bottom-0 right-[-200px] h-[500px] w-[500px] rounded-full bg-blue-900/10 blur-[150px]" />
-
-        <div
-          className="absolute inset-0 opacity-[0.035]"
-          style={{
-            backgroundImage:
-              "linear-gradient(rgba(255,255,255,.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.5) 1px, transparent 1px)",
-            backgroundSize: "70px 70px",
-          }}
-        />
-      </div>
-
-      {/* ================= NAVBAR ================= */}
-      <header className="sticky top-0 z-50 border-b border-white/[0.06] bg-[#080a0d]/80 backdrop-blur-xl">
-        <nav className="mx-auto flex h-20 max-w-7xl items-center justify-between px-5 sm:px-8 lg:px-10">
-          {/* Logo */}
-          <a
-            href="#top"
-            onClick={closeMenu}
-            className="group flex items-center gap-3"
-          >
-            <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-orange-400/30 bg-orange-500/10 font-bold text-orange-400 transition duration-300 group-hover:border-orange-400 group-hover:bg-orange-500/20">
-              C
-            </span>
-
-            <span className="text-lg font-bold tracking-[0.2em]">
-              CHAND<span className="text-orange-400">.</span>
-            </span>
-          </a>
-
-          {/* Desktop navigation */}
-          <div className="hidden items-center gap-10 md:flex">
-            <a
-              href="#about"
-              className="text-sm text-zinc-400 transition hover:text-white"
-            >
-              About
-            </a>
-
-            <a
-              href="#skills"
-              className="text-sm text-zinc-400 transition hover:text-white"
-            >
-              Skills
-            </a>
-
-            <a
-              href="#projects"
-              className="text-sm text-zinc-400 transition hover:text-white"
-            >
-              Projects
-            </a>
-
-            <a
-              href="#contact"
-              className="text-sm text-zinc-400 transition hover:text-white"
-            >
-              Contact
-            </a>
-          </div>
-
-          {/* Desktop CTA */}
-          <a
-            href="#contact"
-            className="hidden items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-5 py-2.5 text-sm font-medium transition hover:border-orange-400/40 hover:bg-orange-500/10 md:flex"
-          >
-            Let's talk
-            <span className="text-orange-400">↗</span>
-          </a>
-
-          {/* Mobile button */}
+    <div className="overflow-x-clip bg-[#08090c] font-sans text-[#f5f5f2] selection:bg-[#2c3480] selection:text-white">
+      {/* NAVIGATION */}
+      <header
+        className={`fixed inset-x-0 top-0 z-50 border-b transition-colors duration-300 ${scrolled
+          ? "border-white/10 bg-[#08090c]/95 backdrop-blur-xl"
+          : "border-transparent bg-transparent"
+          }`}
+      >
+        <div className="mx-auto flex h-18 max-w-290 items-center justify-between gap-5 px-5 sm:px-8">
           <button
-            type="button"
-            onClick={() => setMenuOpen(!menuOpen)}
-            className="flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 bg-white/[0.04] text-xl md:hidden"
-            aria-label="Toggle menu"
+            onClick={() => scrollTo("home")}
+            aria-label="Go to homepage"
+            className="group flex shrink-0 items-center gap-3 text-left"
+          >
+            <span className="grid h-9 w-9 place-items-center rounded-sm bg-[#2c3480] font-bold transition-transform
+             duration-300 group-hover:-rotate-6">
+              C.
+            </span>
+
+            <span>
+              <span className="block text-sm font-bold tracking-tight">
+                Chandrakant Kale
+              </span>
+              <span className="mt-0.5 block font-mono text-[9px] tracking-widest text-neutral-500">
+                DEVELOPER PORTFOLIO
+              </span>
+            </span>
+          </button>
+
+          <button
+            onClick={() => setMenuOpen((previous) => !previous)}
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={menuOpen}
+            className="grid h-10 w-10 place-items-center border border-white/15 text-lg md:hidden"
           >
             {menuOpen ? "×" : "☰"}
           </button>
-        </nav>
 
-        {/* Mobile navigation */}
-        <div
-          className={`border-t border-white/[0.06] bg-[#080a0d] px-5 transition-all duration-300 md:hidden ${
-            menuOpen
-              ? "max-h-96 py-5 opacity-100"
-              : "max-h-0 overflow-hidden py-0 opacity-0"
-          }`}
-        >
-          <div className="flex flex-col gap-1">
-            <a
-              href="#about"
-              onClick={closeMenu}
-              className="rounded-xl px-4 py-3 text-zinc-400 hover:bg-white/[0.04] hover:text-white"
-            >
-              About
-            </a>
+          <nav
+            className={`absolute left-0 right-0 top-17.75 flex flex-col border-b border-white/10 bg-[#08090c] 
+              px-5 pb-5 transition-all duration-200 md:static md:flex md:flex-row md:items-center md:gap-7 md:border-0
+               md:bg-transparent md:p-0 ${menuOpen
+                ? "visible translate-y-0 opacity-100"
+                : "invisible -translate-y-2 opacity-0 md:visible md:translate-y-0 md:opacity-100"
+              }`}
+          >
+            {navigation.map(([id, label]) => (
+              <button
+                key={id}
+                onClick={() => scrollTo(id)}
+                className={`border-b border-white/5 py-4 text-left text-xs transition-colors md:border-0 md:py-2
+                   ${active === id
+                    ? "text-[#929aff]"
+                    : "text-neutral-400 hover:text-white"
+                  }`}
+              >
+                {label}
+              </button>
+            ))}
 
-            <a
-              href="#skills"
-              onClick={closeMenu}
-              className="rounded-xl px-4 py-3 text-zinc-400 hover:bg-white/[0.04] hover:text-white"
+            <button
+              onClick={() => scrollTo("contact")}
+              className="mt-3 border border-white/25 px-4 py-3 text-xs transition-colors hover:border-[#2c3480] 
+              hover:bg-[#2c3480] md:mt-0"
             >
-              Skills
-            </a>
-
-            <a
-              href="#projects"
-              onClick={closeMenu}
-              className="rounded-xl px-4 py-3 text-zinc-400 hover:bg-white/[0.04] hover:text-white"
-            >
-              Projects
-            </a>
-
-            <a
-              href="#contact"
-              onClick={closeMenu}
-              className="rounded-xl px-4 py-3 text-zinc-400 hover:bg-white/[0.04] hover:text-white"
-            >
-              Contact
-            </a>
-          </div>
+              Let's talk ↗
+            </button>
+          </nav>
         </div>
       </header>
 
-      <main id="top">
-        {/* ================= HERO ================= */}
-        <section className="mx-auto grid min-h-[calc(100vh-80px)] max-w-7xl items-center gap-16 px-5 py-20 sm:px-8 lg:grid-cols-[1.05fr_0.95fr] lg:px-10 lg:py-16">
-          {/* Hero content */}
-          <div>
-            {/* Status */}
-            <div className="mb-7 inline-flex items-center gap-3 rounded-full border border-orange-400/20 bg-orange-500/[0.07] px-4 py-2 text-xs font-medium tracking-wide text-orange-300">
-              <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-orange-400 opacity-60" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-orange-400" />
-              </span>
+      <main>
+        {/* HERO */}
+        <section
+          id="home"
+          ref={(element) => {
+            sectionRefs.current.home = element;
+          }}
+          className="relative flex min-h-162.5 scroll-mt-20 items-center overflow-hidden py-24 sm:min-h-175 sm:py-28
+           lg:min-h-185"
+        >
+          <div className="pointer-events-none absolute -right-40 top-16 h-112.5 w-112.5 rounded-full bg-[#2c3480]/20
+           blur-[120px]" />
 
-              Available for frontend opportunities
-            </div>
-
-            {/* Heading */}
-            <h1 className="max-w-4xl text-5xl font-semibold leading-[1.02] tracking-[-0.04em] sm:text-6xl lg:text-7xl xl:text-[82px]">
-              I build{" "}
-              <span className="bg-gradient-to-r from-orange-300 via-orange-500 to-amber-400 bg-clip-text text-transparent">
-                digital experiences
-              </span>{" "}
-              that feel as good as they work.
-            </h1>
-
-            {/* Description */}
-            <p className="mt-7 max-w-2xl text-base leading-7 text-zinc-400 sm:text-lg">
-              I'm Chand, a frontend-focused developer who turns ideas into
-              fast, responsive and polished web experiences with modern
-              JavaScript.
-            </p>
-
-            {/* Buttons */}
-            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-              <a
-                href="#projects"
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-orange-500 px-6 py-3.5 text-sm font-semibold text-black transition duration-300 hover:bg-orange-400 hover:shadow-[0_0_35px_rgba(249,115,22,0.25)]"
-              >
-                Explore my work
-                <span>↗</span>
-              </a>
-
-              <a
-                href="#contact"
-                className="inline-flex items-center justify-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-6 py-3.5 text-sm font-semibold text-white transition duration-300 hover:border-white/20 hover:bg-white/[0.07]"
-              >
-                Contact me
-                <span className="text-orange-400">@</span>
-              </a>
-            </div>
-
-            {/* Meta */}
-            <div className="mt-10 flex flex-wrap items-center gap-4 text-sm text-zinc-500">
-              <span className="flex items-center gap-2">
-                <span className="text-orange-400">●</span>
-                India
-              </span>
-
-              <span className="hidden h-4 w-px bg-white/10 sm:block" />
-
-              <span>Frontend Developer</span>
-            </div>
-          </div>
-
-          {/* Hero visual */}
-          <div className="relative mx-auto flex h-[480px] w-full max-w-[480px] items-center justify-center lg:h-[580px]">
-            {/* Decorative circles */}
-            <div className="absolute h-[360px] w-[360px] rounded-full border border-orange-500/10 sm:h-[430px] sm:w-[430px]" />
-
-            <div className="absolute h-[270px] w-[270px] rounded-full border border-white/[0.07] sm:h-[340px] sm:w-[340px]" />
-
-            <div className="absolute h-[220px] w-[220px] rounded-full bg-orange-500/10 blur-[90px]" />
-
-            {/* Code card */}
-            <div className="absolute right-0 top-8 z-20 rounded-2xl border border-white/10 bg-[#111419]/90 px-5 py-4 shadow-2xl backdrop-blur-xl sm:right-3">
-              <div className="mb-3 flex gap-1.5">
-                <span className="h-2 w-2 rounded-full bg-red-400" />
-                <span className="h-2 w-2 rounded-full bg-yellow-400" />
-                <span className="h-2 w-2 rounded-full bg-green-400" />
+          <div className="relative mx-auto grid w-full max-w-360 items-center gap-10 px-5 sm:px-8 md:grid-cols-[1.15fr_.85fr]
+           md:gap-8 lg:gap-12 lg:px-12">
+            <div>
+              <div className="mb-8 flex items-center gap-3 font-mono text-[10px] tracking-[0.12em] text-neutral-400">
+                <span className="h-2 w-2 animate-pulse rounded-full bg-[#858df1]" />
+                FRONTEND & FULL-STACK DEVELOPMENT
               </div>
 
-              <code className="text-xs text-zinc-400">
-                <span className="text-orange-400">&lt;</span>
-                developer
-                <span className="text-orange-400"> /&gt;</span>
-              </code>
-            </div>
+              <h1 className="text-[clamp(3.4rem,8vw,6.5rem)] font-bold leading-[.98] tracking-[-0.085em]">
+                <span data-hero-line className="block">
+                  Building
+                </span>
+                <span data-hero-line className="block">
+                  ideas into
+                </span>
+                <span data-hero-line className="block text-[#858df1]">
+                  real products.
+                </span>
+              </h1>
 
-            {/* Image glow */}
-            <div className="absolute h-[310px] w-[240px] rounded-[45%] bg-orange-500/20 blur-[70px]" />
+              <p className="mt-7 max-w-117.5 text-sm leading-8 text-neutral-400 sm:text-base">
+                I'm Chandrakant, a developer from India who enjoys turning
+                practical problems into thoughtful web experiences, from
+                interface design to backend logic.
+              </p>
 
-            {/* Portrait */}
-            <div className="relative z-10 flex h-[390px] w-[270px] items-end justify-center overflow-hidden rounded-[45%] border border-white/10 bg-gradient-to-b from-zinc-800 to-zinc-950 shadow-[0_30px_100px_rgba(0,0,0,0.7)] sm:h-[470px] sm:w-[320px]">
-              <img
-                src="/profile.png"
-                alt="Chand wearing a dark professional suit"
-                className="h-full w-full object-cover object-top"
-              />
-            </div>
+              <div className="mt-8 flex flex-wrap gap-3">
+                <button
+                  onClick={() => scrollTo("work")}
+                  className="group inline-flex items-center gap-4 bg-[#2c3480] px-5 py-4 text-xs font-semibold 
+                  transition-all duration-300 hover:-translate-y-1 hover:bg-[#3a46a5]"
+                >
+                  Explore my work
+                  <span className="transition-transform group-hover:translate-x-1">
+                    <Arrow />
+                  </span>
+                </button>
 
-            {/* Floating card */}
-            <div className="absolute bottom-14 left-0 z-20 flex items-center gap-3 rounded-2xl border border-white/10 bg-[#111419]/90 px-4 py-3 shadow-2xl backdrop-blur-xl sm:left-2">
-              <span className="text-xl text-orange-400">✦</span>
+                <button
+                  onClick={() => scrollTo("contact")}
+                  className="inline-flex items-center gap-4 border border-white/25 px-5 py-4 text-xs font-semibold 
+                  transition-all duration-300 hover:-translate-y-1 hover:border-white"
+                >
+                  Get in touch <Arrow diagonal />
+                </button>
+              </div>
 
-              <div>
-                <p className="text-sm font-semibold text-white">
-                  Clean code.
-                </p>
-
-                <p className="text-xs text-zinc-500">
-                  Thoughtful interfaces.
-                </p>
+              <div className="mt-9 flex items-center gap-3 font-mono text-[9px] tracking-[0.09em] text-neutral-500">
+                <span className="text-[#858df1]">✳</span>
+                BCA GRADUATE · INDEPENDENT PROJECT BUILDER
               </div>
             </div>
 
-            {/* Number */}
-            <span className="absolute bottom-3 right-5 text-7xl font-black tracking-tighter text-white/[0.035] sm:text-8xl">
-              01
-            </span>
+            <div
+              data-reveal
+              className="mx-auto w-full max-w-130 md:justify-self-end lg:max-w-142.5"
+            >
+              <div className="relative z-10 flex h-85 items-end justify-center sm:h-110 md:h-120 lg:h-132.5">
+                {PHOTO ? (
+                  <img src={PHOTO} alt="Portrait of Chandrakant Kale" fetchPriority="high"
+                    className="h-full w-full object-contain object-bottom" />
+                ) : (
+                  <div className="mb-6 flex h-[85%] w-[82%] flex-col items-center justify-center rounded-t-full
+                   bg-[#d0d1d7] text-[#2c3480]"> <span className="text-7xl font-semibold -tracking-widest"
+                    > CK. </span>
+                    <span className="mt-3 font-mono text-[9px]"> ADD YOUR PHOTO TO SRC/ASSETS </span>
+                  </div>
+                )}
+              </div>
+
+              <div className="mt-5 flex items-center justify-between font-mono text-[9px] tracking-widest text-neutral-500">
+                <span>CHANDRAKANT KALE</span>
+                <span className="text-[#858df1]">INDIA · IST</span>
+              </div>
+            </div>
           </div>
         </section>
 
-        {/* ================= TICKER ================= */}
-        <section className="overflow-hidden border-y border-white/[0.06] bg-white/[0.015]">
-          <div className="mx-auto flex max-w-7xl items-center gap-7 overflow-hidden px-5 py-5 whitespace-nowrap text-xs font-semibold tracking-[0.25em] text-zinc-500 sm:px-8 lg:px-10">
-            <span>REACT</span>
-            <span className="text-orange-500">✦</span>
-
-            <span>JAVASCRIPT</span>
-            <span className="text-orange-500">✦</span>
-
-            <span>TAILWIND CSS</span>
-            <span className="text-orange-500">✦</span>
-
-            <span>NODE.JS</span>
-            <span className="text-orange-500">✦</span>
-
-            <span>MONGODB</span>
-            <span className="text-orange-500">✦</span>
-
-            <span>REACT</span>
-            <span className="text-orange-500">✦</span>
+        {/* ANIMATED TECHNOLOGY STRIP: ONLY ONE INSTANCE */}
+        <div className="overflow-hidden border-y border-white/10 bg-[#0d0e13] py-5">
+          <div
+            ref={marqueeRef}
+            className="flex w-max items-center whitespace-nowrap font-mono text-[10px] tracking-[0.15em] text-neutral-300"
+          >
+            {[0, 1].map((copy) => (
+              <div
+                key={copy}
+                aria-hidden={copy === 1}
+                className="flex shrink-0 items-center gap-8 pr-8"
+              >
+                {technologies.map((technology) => (
+                  <span
+                    key={technology}
+                    className="flex shrink-0 items-center gap-8"
+                  >
+                    {technology}
+                    <span className="h-1 w-1 rotate-45 bg-[#858df1]" />
+                  </span>
+                ))}
+              </div>
+            ))}
           </div>
-        </section>
+        </div>
 
-        {/* ================= ABOUT ================= */}
+        {/* ABOUT */}
         <section
           id="about"
-          className="mx-auto max-w-7xl px-5 py-28 sm:px-8 lg:px-10 lg:py-36"
+          ref={(element) => {
+            sectionRefs.current.about = element;
+          }}
+          className="scroll-mt-20 py-24 sm:py-32"
         >
-          <div className="mb-12 text-xs font-semibold tracking-[0.25em] text-orange-400">
-            / 01 — ABOUT
-          </div>
+          <div className="mx-auto grid max-w-290 gap-12 px-5 sm:px-8 md:grid-cols-2 md:gap-20">
+            <div data-reveal>
+              <SectionLabel number="01">A LITTLE ABOUT ME</SectionLabel>
 
-          <div className="grid gap-12 lg:grid-cols-2 lg:gap-24">
-            <h2 className="text-4xl font-semibold leading-tight tracking-[-0.03em] sm:text-5xl">
-              Developer by craft.
-              <br />
-              <span className="text-zinc-600">Builder by nature.</span>
-            </h2>
+              <h2 className="mt-7 text-4xl font-semibold leading-tight tracking-[-0.065em] sm:text-6xl">
+                Curious by nature.
+                <span className="mt-2 block text-neutral-600">
+                  Practical by choice.
+                </span>
+              </h2>
+            </div>
 
-            <div>
-              <p className="text-xl leading-8 text-zinc-300">
-                I enjoy taking a blank screen and turning it into something
-                useful, intuitive and memorable.
+            <div
+              data-reveal
+              className="text-sm leading-8 text-neutral-400 sm:pt-12 sm:text-[15px]"
+            >
+              <p className="mb-5">
+                I'm <strong className="font-semibold text-white">Chandrakant Kale</strong>,
+                a BCA graduate and developer interested in building useful,
+                accessible and reliable web applications.
               </p>
 
-              <p className="mt-6 leading-7 text-zinc-500">
-                My focus is frontend development: semantic HTML, modern CSS,
-                JavaScript and React. I also work comfortably across the stack
-                when a project needs APIs, databases or authentication.
+              <p className="mb-5">
+                My learning goes beyond writing components. I work with
+                databases, authentication, API design and the details that
+                connect a frontend to a working application.
               </p>
 
-              <a
-                href="#contact"
-                className="mt-8 inline-flex items-center gap-2 border-b border-orange-500/40 pb-1 text-sm font-medium text-orange-400 transition hover:border-orange-400"
-              >
-                Let's build something
-                <span>↗</span>
-              </a>
+              <p>
+                <strong className="text-white">Clean India</strong> is my
+                independent civic waste-management project. I'm also
+                developing <strong className="text-white">PorChatal</strong>,
+                a messaging project that has pushed me to learn about privacy
+                and cryptography.
+              </p>
+
+              <div className="mt-8 flex items-center gap-4 border-t border-white/10 pt-6">
+                <span className="grid h-12 w-12 shrink-0 place-items-center bg-[#2c3480] font-bold">
+                  CK
+                </span>
+                <div>
+                  <p className="text-xs font-semibold text-white">
+                    Learning through building
+                  </p>
+                  <p className="mt-1 text-[11px] text-neutral-500">
+                    Frontend · APIs · Databases · Security fundamentals
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </section>
 
-        {/* ================= SKILLS ================= */}
+        {/* SKILLS */}
         <section
           id="skills"
-          className="border-y border-white/[0.06] bg-white/[0.015]"
+          ref={(element) => {
+            sectionRefs.current.skills = element;
+          }}
+          className="scroll-mt-20 bg-[#f2f2ef] py-24 text-[#111216] sm:py-32"
         >
-          <div className="mx-auto max-w-7xl px-5 py-28 sm:px-8 lg:px-10 lg:py-36">
-            <div className="mb-12 text-xs font-semibold tracking-[0.25em] text-orange-400">
-              / 02 — TOOLKIT
-            </div>
+          <div className="mx-auto max-w-290 px-5 sm:px-8">
+            <div
+              data-reveal
+              className="mb-12 flex flex-col gap-6 md:mb-14 md:flex-row md:items-end md:justify-between"
+            >
+              <div>
+                <SectionLabel number="02" light>
+                  TOOLS OF THE TRADE
+                </SectionLabel>
 
-            <div className="grid gap-10 lg:grid-cols-2 lg:items-end">
-              <h2 className="text-4xl font-semibold leading-tight tracking-[-0.03em] sm:text-5xl">
-                The tools behind
-                <br />
-                <span className="text-zinc-600">the interface.</span>
-              </h2>
+                <h2 className="mt-7 text-4xl font-semibold leading-tight tracking-[-0.065em] sm:text-6xl">
+                  The stack behind
+                  <span className="block text-neutral-500">the work.</span>
+                </h2>
+              </div>
 
-              <p className="max-w-xl leading-7 text-zinc-500">
-                Focused on fundamentals, performance and interfaces that work
-                across devices.
+              <p className="max-w-82.5 text-sm leading-7 text-neutral-600">
+                Technologies I've worked with through projects, hands-on
+                practice and continued learning.
               </p>
             </div>
 
-            <div className="mt-14 grid gap-4 sm:grid-cols-2">
-              {skills.map((skill) => (
-                <article
-                  key={skill.title}
-                  className="group rounded-3xl border border-white/[0.07] bg-[#0d1014] p-7 transition duration-300 hover:-translate-y-1 hover:border-orange-500/30 hover:bg-[#11151a]"
+            <div className="grid grid-cols-2 border-l border-t border-black/15 sm:grid-cols-3">
+              {skills.map(([name, category]) => (
+                <div
+                  key={name}
+                  data-reveal
+                  className="group flex min-h-28.75 flex-col justify-between gap-6 border-b border-r border-black/15
+                   p-4 transition-all duration-300 hover:-translate-y-1 hover:bg-[#2c3480] hover:text-white 
+                   sm:min-h-32.5 sm:p-6"
                 >
-                  <div className="mb-8 flex h-12 w-12 items-center justify-center rounded-xl border border-orange-500/20 bg-orange-500/[0.07] font-mono text-sm text-orange-400 transition group-hover:bg-orange-500/10">
-                    {skill.icon}
+                  <span className="font-mono text-[9px] tracking-widest text-neutral-500 transition-colors 
+                  group-hover:text-[#d2d5ff]">
+                    {category}
+                  </span>
+                  <span className="text-base font-semibold tracking-tight sm:text-xl">
+                    {name}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            <p className="mt-6 font-mono text-[9px] leading-6 tracking-widest text-neutral-500">
+              MY APPROACH: UNDERSTAND THE PROBLEM → BUILD → TEST → IMPROVE
+            </p>
+          </div>
+        </section>
+
+        {/* PROJECTS */}
+        <section
+          id="work"
+          ref={(element) => {
+            sectionRefs.current.work = element;
+          }}
+          className="scroll-mt-20 py-24 sm:py-32"
+        >
+          <div className="mx-auto max-w-290 px-5 sm:px-8">
+            <div
+              data-reveal
+              className="mb-12 flex flex-col gap-5 md:mb-14 md:flex-row md:items-end md:justify-between"
+            >
+              <div>
+                <SectionLabel number="03">SELECTED PROJECTS</SectionLabel>
+
+                <h2 className="mt-7 text-4xl font-semibold leading-tight tracking-[-0.065em] sm:text-6xl">
+                  Built to solve
+                  <span className="block text-neutral-600">real problems.</span>
+                </h2>
+              </div>
+
+              <p className="max-w-75 text-sm leading-7 text-neutral-400">
+                A closer look at what I've been working on and the problems
+                behind each project.
+              </p>
+            </div>
+
+            <div className="border-t border-white/15">
+              {projects.map((project) => (
+                <article
+                  key={project.number}
+                  data-reveal
+                  className="group grid grid-cols-[30px_minmax(0,1fr)_32px] gap-3 border-b border-white/15 py-8
+                   transition-colors duration-300 hover:bg-white/2.5 sm:grid-cols-[45px_minmax(0,1fr)_minmax(180px,.75fr)_35px]
+                    sm:gap-5 sm:py-10"
+                >
+                  <span className="pt-1 font-mono text-[10px] text-neutral-500">
+                    {project.number}
+                  </span>
+
+                  <div>
+                    <p className="mb-3 font-mono text-[9px] tracking-[.12em] text-[#929aff]">
+                      {project.category}
+                    </p>
+
+                    <h3 className="text-3xl font-semibold tracking-[-.065em] transition-transform duration-300 
+                    group-hover:translate-x-1 sm:text-4xl">
+                      {project.name}
+                    </h3>
+
+                    <p className="mt-3 font-mono text-[9px] text-neutral-500">
+                      {project.year}
+                    </p>
+
+                    <div className="mt-5 flex flex-wrap gap-2 sm:hidden">
+                      {project.stack.map((tag) => (
+                        <span
+                          key={tag}
+                          className="border border-white/15 px-2 py-1.5 font-mono text-[9px] text-neutral-300"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
                   </div>
 
-                  <h3 className="text-xl font-semibold">{skill.title}</h3>
+                  <div className="col-start-2 sm:col-start-auto">
+                    <p className="text-xs leading-7 text-neutral-400 sm:text-[13px]">
+                      {project.description}
+                    </p>
 
-                  <p className="mt-3 text-sm leading-6 text-zinc-500">
-                    {skill.description}
-                  </p>
+                    <div className="mt-4 hidden flex-wrap gap-2 sm:flex">
+                      {project.stack.map((tag) => (
+                        <span
+                          key={tag}
+                          className="border border-white/15 px-2 py-1.5 font-mono text-[9px] text-neutral-300"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={() => {
+                      if (project.github) {
+                        openExternal(project.github);
+                      } else {
+                        scrollTo("contact");
+                      }
+                    }}
+                    aria-label={`View ${project.name} project`}
+                    className="col-start-3 row-start-1 grid h-8 w-8 place-items-center border border-white/20 
+                    transition-all duration-300 group-hover:rotate-45 group-hover:border-[#2c3480] 
+                    group-hover:bg-[#2c3480] sm:col-start-4"
+                  >
+                    <Arrow diagonal />
+                  </button>
                 </article>
+              ))}
+            </div>
+
+            <p className="mt-6 font-mono text-[9px] leading-6 text-neutral-500">
+              ADD YOUR ACTUAL REPOSITORY URLS TO THE PROJECT DATA AT THE TOP
+              OF THIS FILE.
+            </p>
+          </div>
+        </section>
+
+        {/* APPROACH */}
+        <section className="border-y border-white/10 bg-[#101116] py-24 sm:py-32">
+          <div className="mx-auto grid max-w-290 gap-12 px-5 sm:px-8 md:grid-cols-[.85fr_1.15fr] md:gap-20">
+            <div data-reveal>
+              <SectionLabel number="04">HOW I WORK</SectionLabel>
+
+              <h2 className="mt-7 text-4xl font-semibold leading-tight tracking-[-0.065em] sm:text-6xl">
+                Less noise.
+                <span className="mt-2 block text-neutral-600">
+                  More substance.
+                </span>
+              </h2>
+
+              <p className="mt-6 max-w-sm text-sm leading-8 text-neutral-400">
+                Good software isn't only about how it looks. It's also about
+                how it behaves, how it's maintained and whether it actually
+                helps someone.
+              </p>
+            </div>
+
+            <div className="border-t border-white/15">
+              {[
+                [
+                  "01",
+                  "Understand first",
+                  "Start with the user and the problem instead of adding features without a purpose.",
+                ],
+                [
+                  "02",
+                  "Build with intention",
+                  "Keep components understandable, layouts responsive and code organised.",
+                ],
+                [
+                  "03",
+                  "Learn the whole system",
+                  "Understand how the interface, server, APIs and database work together.",
+                ],
+                [
+                  "04",
+                  "Improve continuously",
+                  "Test edge cases, fix issues and keep learning from each implementation.",
+                ],
+              ].map(([number, title, description]) => (
+                <div
+                  key={number}
+                  data-reveal
+                  className="grid grid-cols-[32px_1fr] gap-4 border-b border-white/15 py-6 sm:grid-cols-[42px_1fr]"
+                >
+                  <span className="pt-1 font-mono text-[10px] text-[#929aff]">
+                    {number}
+                  </span>
+                  <div>
+                    <h3 className="text-base font-semibold tracking-tight">
+                      {title}
+                    </h3>
+                    <p className="mt-2 text-xs leading-7 text-neutral-400">
+                      {description}
+                    </p>
+                  </div>
+                </div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* ================= PROJECTS ================= */}
+        {/* CONTACT */}
         <section
-          id="projects"
-          className="mx-auto max-w-7xl px-5 py-28 sm:px-8 lg:px-10 lg:py-36"
+          id="contact"
+          ref={(element) => {
+            sectionRefs.current.contact = element;
+          }}
+          className="scroll-mt-20 py-24 sm:py-32"
         >
-          <div className="mb-12 text-xs font-semibold tracking-[0.25em] text-orange-400">
-            / 03 — SELECTED WORK
-          </div>
+          <div className="mx-auto max-w-290 px-5 sm:px-8">
+            <div
+              data-reveal
+              className="relative overflow-hidden border border-white/15 bg-[#0d0e14] p-6 sm:p-12 md:p-16"
+            >
+              <div className="pointer-events-none absolute -right-24 -top-32 h-80 w-80 rounded-full bg-[#2c3480]/35 
+              blur-[100px]" />
 
-          <div className="grid gap-10 lg:grid-cols-2 lg:items-end">
-            <h2 className="text-4xl font-semibold leading-tight tracking-[-0.03em] sm:text-5xl">
-              Things I've
-              <br />
-              <span className="text-zinc-600">built.</span>
-            </h2>
+              <div className="relative">
+                <SectionLabel number="05">
+                  HAVE A PROJECT IN MIND?
+                </SectionLabel>
 
-            <p className="max-w-xl leading-7 text-zinc-500">
-              Selected projects showing how I approach product thinking, UI
-              and implementation.
-            </p>
-          </div>
-
-          <div className="mt-14 divide-y divide-white/[0.07] border-y border-white/[0.07]">
-            {projects.map((project) => (
-              <article
-                key={project.number}
-                className="group grid gap-6 py-10 transition hover:bg-white/[0.015] md:grid-cols-[70px_1fr_50px]"
-              >
-                <div className="font-mono text-sm text-zinc-600">
-                  {project.number}
-                </div>
-
-                <div>
-                  <span className="text-xs font-semibold uppercase tracking-[0.2em] text-orange-400">
-                    {project.type}
+                <h2 className="mt-8 text-5xl font-semibold leading-[1.04] tracking-[-.08em] sm:text-7xl md:text-8xl">
+                  Let's make
+                  <span className="block text-[#858df1]">
+                    something useful.
                   </span>
+                </h2>
 
-                  <h3 className="mt-3 text-2xl font-semibold transition group-hover:text-orange-400 sm:text-3xl">
-                    {project.title}
-                  </h3>
+                <p className="mt-7 max-w-md text-sm leading-8 text-neutral-400">
+                  I'm interested in developer opportunities, meaningful
+                  projects and connecting with people who care about building
+                  good software.
+                </p>
 
-                  <p className="mt-4 max-w-2xl leading-7 text-zinc-500">
-                    {project.description}
-                  </p>
+                <button
+                  onClick={() => {
+                    window.location.href = `mailto:${EMAIL}`;
+                  }}
+                  className="group mt-8 inline-flex items-center gap-4 bg-[#2c3480] px-5 py-4 text-xs font-semibold 
+                  transition-all duration-300 hover:-translate-y-1 hover:bg-[#3a46a5]"
+                >
+                  Start a conversation
+                  <Arrow diagonal />
+                </button>
 
-                  <div className="mt-6 flex flex-wrap gap-2">
-                    {project.stack.map((tag) => (
-                      <span
-                        key={tag}
-                        className="rounded-full border border-white/[0.08] bg-white/[0.025] px-3 py-1.5 text-xs text-zinc-500"
+                <div className="mt-12 flex flex-col items-start justify-between gap-6 border-t border-white/15 pt-6 
+                sm:flex-row sm:items-center">
+                  <button
+                    onClick={copyEmail}
+                    className="flex max-w-full items-center gap-3 break-all text-left text-xs text-neutral-300 
+                    transition-colors hover:text-[#929aff]"
+                  >
+                    {copied ? "✓ Email copied" : EMAIL}
+                    {!copied && <Arrow diagonal />}
+                  </button>
+
+                  <div className="flex flex-wrap gap-2">
+                    {[
+                      { label: "GitHub", symbol: "GH", url: GITHUB },
+                      { label: "LinkedIn", symbol: "in", url: LINKEDIN },
+                    ].map((social) => (
+                      <button
+                        key={social.label}
+                        onClick={() => openExternal(social.url)}
+                        className="inline-flex items-center gap-2 border border-white/20 px-3 py-3 text-[10px] 
+                        transition-colors hover:border-[#2c3480] hover:bg-[#2c3480]"
                       >
-                        {tag}
-                      </span>
+                        <span className="font-mono">{social.symbol}</span>
+                        {social.label}
+                        <Arrow diagonal />
+                      </button>
                     ))}
                   </div>
                 </div>
-
-                <a
-                  href="#"
-                  aria-label={`View ${project.title}`}
-                  className="flex h-11 w-11 items-center justify-center self-start rounded-full border border-white/10 text-lg text-zinc-400 transition group-hover:border-orange-500/40 group-hover:bg-orange-500 group-hover:text-black"
-                >
-                  ↗
-                </a>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        {/* ================= CONTACT ================= */}
-        <section
-          id="contact"
-          className="border-t border-white/[0.06] bg-gradient-to-b from-orange-500/[0.04] to-transparent"
-        >
-          <div className="mx-auto max-w-7xl px-5 py-28 sm:px-8 lg:px-10 lg:py-36">
-            <div className="text-xs font-semibold tracking-[0.25em] text-orange-400">
-              / 04 — CONTACT
-            </div>
-
-            <div className="mt-12 max-w-4xl">
-              <h2 className="text-5xl font-semibold leading-[1.02] tracking-[-0.04em] sm:text-7xl">
-                Have a project
-                <br />
-                <span className="text-zinc-600">in mind?</span>
-              </h2>
-
-              <p className="mt-7 max-w-xl text-lg leading-8 text-zinc-500">
-                I'm open to interesting products, frontend roles and
-                collaborations.
-              </p>
-
-              <a
-                href="mailto:hello@chand.dev"
-                className="mt-10 inline-flex items-center gap-3 border-b border-orange-500/40 pb-2 text-lg font-medium text-white transition hover:border-orange-400 hover:text-orange-400"
-              >
-                hello@chand.dev
-                <span className="text-orange-400">↗</span>
-              </a>
-
-              <div className="mt-12 flex flex-wrap gap-3">
-                <a
-                  href="#"
-                  className="rounded-full border border-white/10 px-5 py-3 text-sm text-zinc-400 transition hover:border-orange-500/30 hover:text-white"
-                >
-                  <span className="mr-2 text-orange-400">GH</span>
-                  GitHub
-                </a>
-
-                <a
-                  href="#"
-                  className="rounded-full border border-white/10 px-5 py-3 text-sm text-zinc-400 transition hover:border-orange-500/30 hover:text-white"
-                >
-                  <span className="mr-2 text-orange-400">in</span>
-                  LinkedIn
-                </a>
-
-                <a
-                  href="mailto:hello@chand.dev"
-                  className="rounded-full border border-white/10 px-5 py-3 text-sm text-zinc-400 transition hover:border-orange-500/30 hover:text-white"
-                >
-                  <span className="mr-2 text-orange-400">@</span>
-                  Email
-                </a>
               </div>
             </div>
           </div>
         </section>
       </main>
 
-      {/* ================= FOOTER ================= */}
-      <footer className="border-t border-white/[0.06]">
-        <div className="mx-auto flex max-w-7xl flex-col gap-4 px-5 py-8 text-xs text-zinc-600 sm:px-8 md:flex-row md:items-center md:justify-between lg:px-10">
-          <span>© 2026 CHAND.</span>
-
-          <span>Designed & built with intention.</span>
-
-          <a
-            href="#top"
-            className="transition hover:text-orange-400"
+      {/* FOOTER */}
+      <footer className="border-t border-white/10 py-6">
+        <div className="mx-auto flex max-w-290 flex-wrap items-center justify-between gap-4 px-5 font-mono text-[9px]
+         tracking-widest text-neutral-500 sm:px-8">
+          <span>© 2026 CHANDRAKANT KALE</span>
+          <span>DESIGNED WITH INTENTION</span>
+          <button
+            onClick={() => scrollTo("home")}
+            className="transition-colors hover:text-white"
           >
-            Back to top ↑
-          </a>
+            BACK TO TOP ↑
+          </button>
         </div>
       </footer>
     </div>
   );
 }
-
-export default App;

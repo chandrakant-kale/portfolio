@@ -300,9 +300,9 @@ export default function App() {
             aria-label="Go to homepage"
             className="group flex shrink-0 items-center gap-3 text-left"
           >
-            <span className="grid h-9 w-9 place-items-center rounded-sm bg-[#2c3480] font-bold transition-transform
+            <span className="grid h-9 w-9 place-items-center rounded-full bg-[#2c3480] font-bold transition-transform
              duration-300 group-hover:-rotate-6">
-              C.
+              C
             </span>
 
             <span>

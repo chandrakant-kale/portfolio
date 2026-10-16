@@ -367,6 +367,7 @@ export default function App() {
           className="relative flex min-h-162.5 scroll-mt-20 items-center overflow-hidden py-24 sm:min-h-175 sm:py-28
            lg:min-h-185"
         >
+
           <div className="pointer-events-none absolute -right-40 top-16 h-112.5 w-112.5 rounded-full bg-[#2c3480]/20
            blur-[120px]" />
 

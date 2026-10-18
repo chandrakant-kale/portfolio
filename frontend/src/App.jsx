@@ -364,7 +364,7 @@ export default function App() {
           ref={(element) => {
             sectionRefs.current.home = element;
           }}
-          className="relative flex min-h-162.5 scroll-mt-20 items-center overflow-hidden py-24 sm:min-h-175 sm:py-28
+          className="relative flex min-h-162.5 scroll-mt-20 items-center overflow-hidden py-24 sm:min-h-175 sm:py-20
            lg:min-h-185"
         >
 
@@ -374,7 +374,7 @@ export default function App() {
           <div className="relative mx-auto grid w-full max-w-360 items-center gap-10 px-5 sm:px-8 md:grid-cols-[1.15fr_.85fr]
            md:gap-8 lg:gap-12 lg:px-12">
             <div>
-              <div className="mb-8 flex items-center gap-3 font-mono text-[10px] tracking-[0.12em] text-neutral-400">
+              <div className="mb-5 flex items-center gap-3 font-mono text-[10px] tracking-[0.12em] text-neutral-400">
                 <span className="h-2 w-2 animate-pulse rounded-full bg-[#858df1]" />
                 FRONTEND & FULL-STACK DEVELOPMENT
               </div>

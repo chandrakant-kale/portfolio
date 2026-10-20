@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import PHOTO from "./assets/ProfessionalPhoto.png";
 
 // Replace these with your real details.
-const EMAIL = "chandrakantkale517.com";
+const EMAIL = "chandrakantkale517@gmail.com";
 const GITHUB = "https://github.com/chandrakant-kale";
 const LINKEDIN = "https://www.linkedin.com/in/chandraknt kale/";
 
@@ -262,11 +262,6 @@ export default function App() {
   }, []);
 
   const copyEmail = async () => {
-    if (EMAIL.includes("YOUR_EMAIL")) {
-      window.alert("Replace YOUR_EMAIL@example.com with your real email.");
-      return;
-    }
-
     try {
       await navigator.clipboard.writeText(EMAIL);
       setCopied(true);
